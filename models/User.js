@@ -44,11 +44,6 @@ const UserSchema = new Schema(
 UserSchema.virtual('friendCount').get(function() {
   return this.friends.length;
 });
-
-UserSchema.virtual('friendCount').get(function() {
-  //.reduce() method to tally up the total of every comment with its replies
-  return this.comments.reduce((total, comment) => total + comment.replies.length + 1, 0);
-});
   
   // create User model using UserSchema
 const User = model('User', UserSchema);
