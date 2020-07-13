@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 const moment = require('moment');
 
 const ReactionsSchema = new Schema(
@@ -48,11 +48,12 @@ const ThoughtSchema = new Schema(
       default: Date.now,
       get: (createdAtVal) => moment(createdAtVal).format('MMM DD, YYYY [at] hh:mm a')
     },
-    reactions: [ReactionsSchema],
+    reactions: [ReactionsSchema]
   },
   {
     toJSON: {
       virtuals: true,
+      getters: true
     },
     //We set id to false because this is a virtual that Mongoose returns, and we don’t need it.
     id: false
