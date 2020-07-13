@@ -41,12 +41,9 @@ const ThoughtController = {
         _id
       }) => {
         return User.findOneAndUpdate(
-          {_id: params.userId}, 
+          {_id: body.userId}, 
           {$push: {thoughts: _id}},
-          //because we passed the option of new: true, we're receiving back the updated pizza (the pizza with the new comment included).
-          {
-            new: true
-          }
+          {new: true}
         );
       })
       .then(dbUserInfo => {
@@ -97,40 +94,20 @@ const ThoughtController = {
       .catch(err => res.json(err));
   },
 
-  // remove comment
-  removeThoughts({
-    params
-  }, res) {
-    Thought.findOneAndDelete({
-        _id: params.commentId
-      })
-      .then(removedThought => {
-        if (!removedThought) {
-          return res.status(404).json({
-            message: 'A Thought Cannot Be Found!'
-          });
-        }
-        return User.findOneAndUpdate({
-          _id: params.userId
-        }, {
-          $pull: {
-            thoughts: params.thoughtId
-          }
-        }, {
-          new: true
-        });
-      })
-      .then(dbUserInfo => {
-        if (!dbUserInfo) {
-          res.status(404).json({
-            message: 'A User Cannot Be Found!'
-          });
-          return;
-        }
-        res.json(dbUserInfo);
-      })
-      .catch(err => res.json(err));
-  }
+  removeThoughts({params}, res) {
+    Thought.findOneAndDelete({_id: params.thoughtId})
+            .then(dbThoughtInfo => {
+                if(!dbThoughtInfo) {
+                    res.status(404).json({message: 'No thought found with this id!'});
+                    return;
+                }
+                res.json(dbThoughtInfo);
+            })
+            .catch(err => res.status(400).json(err));
+},
+
+
+
 };
 
 module.exports = ThoughtController;
